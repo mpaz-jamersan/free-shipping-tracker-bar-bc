@@ -3,11 +3,11 @@ import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { bigCommerceSDK } from '../scripts/bcSdk';
 
-const SessionContext = createContext({ context: '' });
+const SessionContext = createContext({ sub: '' });
 
 const SessionProvider = ({ children }) => {
     const { query } = useRouter();
-    const [context, setContext] = useState('');
+    const [sub, setContext] = useState('');
 
     useEffect(() => {
         const signedPayloadJwt = query.signed_payload_jwt;
@@ -17,16 +17,15 @@ const SessionProvider = ({ children }) => {
         }
 
         const payload = decodedToken.payload;
-        const context = payload.context;
-        if (context) {
-            setContext(context.toString());
+        if (payload.sub) {
+            setContext(payload.sub.toString());
             // Keeps app in sync with BC (e.g. heatbeat, user logout, etc)
-            bigCommerceSDK(context);
+            bigCommerceSDK(payload.sub);
         }
     }, [query.signed_payload_jwt]);
 
     return (
-        <SessionContext.Provider value={{ context }}>
+        <SessionContext.Provider value={{ sub }}>
             {children}
         </SessionContext.Provider>
     );

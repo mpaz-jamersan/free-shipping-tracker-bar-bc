@@ -19,10 +19,11 @@ async function fetcher(url: string, query: string) {
 // Reusable SWR hooks
 // https://swr.vercel.app/
 export function useProducts() {
-    const { context } = useSession();
-    const params = new URLSearchParams({ context }).toString();
+    const { sub } = useSession();
+    console.log('sub', sub)
+    const params = new URLSearchParams({ sub }).toString();
     // Request is deduped and cached; Can be shared across components
-    const { data, error } = useSWR(context ? ['/api/products', params] : null, fetcher);
+    const { data, error } = useSWR(sub ? ['/api/products', params] : null, fetcher);
 
     return {
         summary: data,
@@ -51,9 +52,9 @@ export function useProductInfo(pid: number, list?:ListItem[]) {
     const { context } = useSession();
     const params = new URLSearchParams({ context }).toString();
 
-    let product: ListItem; 
+    let product: ListItem;
 
-    if (list?.length) { 
+    if (list?.length) {
        product = list.find(item => item.id === pid);
     }
 
