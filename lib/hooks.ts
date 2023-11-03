@@ -19,11 +19,11 @@ async function fetcher(url: string, query: string) {
 // Reusable SWR hooks
 // https://swr.vercel.app/
 export function useProducts() {
-    const { sub } = useSession();
-    console.log('sub', sub)
-    const params = new URLSearchParams({ sub }).toString();
+    const { context } = useSession();
+    console.log('sub', context)
+    const params = new URLSearchParams({ context }).toString();
     // Request is deduped and cached; Can be shared across components
-    const { data, error } = useSWR(sub ? ['/api/products', params] : null, fetcher);
+    const { data, error } = useSWR(context ? ['/api/products', params] : null, fetcher);
 
     return {
         summary: data,

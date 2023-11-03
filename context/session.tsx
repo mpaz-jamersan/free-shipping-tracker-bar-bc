@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { bigCommerceSDK } from '../scripts/bcSdk';
 
-const SessionContext = createContext({ sub: '' });
+const SessionContext = createContext({ context: '' });
 
 const SessionProvider = ({ children }) => {
     const { query } = useRouter();
@@ -25,7 +25,7 @@ const SessionProvider = ({ children }) => {
     }, [query.signed_payload_jwt]);
 
     return (
-        <SessionContext.Provider value={{ sub }}>
+        <SessionContext.Provider value={{ context: sub }}>
             {children}
         </SessionContext.Provider>
     );
