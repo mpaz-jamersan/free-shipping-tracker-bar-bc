@@ -12,6 +12,10 @@ const SessionProvider = ({ children }) => {
     useEffect(() => {
         const signedPayloadJwt = query.signed_payload_jwt;
         const decodedToken = jwt.decode(signedPayloadJwt, { complete: true });
+        if (!decodedToken) {
+            return;
+        }
+
         const payload = decodedToken.payload;
         const context = payload.context;
         if (context) {
