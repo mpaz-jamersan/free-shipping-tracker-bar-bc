@@ -1,6 +1,7 @@
 import useSWR from 'swr';
 import { useSession } from '../context/session';
 import { ErrorProps, ListItem, Order, QueryParams, ShippingAndProductsInfo } from '../types';
+import { bigcommerceClient, getSimpleSession } from './auth'
 
 async function fetcher(url: string, query: string) {
     const res = await fetch(`${url}?${query}`);
@@ -18,11 +19,15 @@ async function fetcher(url: string, query: string) {
 
 // Reusable SWR hooks
 // https://swr.vercel.app/
-export function useProducts() {
+export async function useProducts() {
     const { context } = useSession();
-    const params = new URLSearchParams({ context }).toString();
+    //const params = new URLSearchParams({ context }).toString();
     // Request is deduped and cached; Can be shared across components
-    const { data, error } = useSWR(context ? ['/api/products', params] : null, fetcher);
+    //const { data, error } = useSWR(context ? ['/api/products', params] : null, fetcher);
+
+    const { accessToken, storeHash } = await getSimpleSession(context);
+    const bigcommerce = bigcommerceClient(accessToken, storeHash);
+    const { data, error } = await bigcommerce.get('/catalog/summary');
 
     return {
         summary: data,
