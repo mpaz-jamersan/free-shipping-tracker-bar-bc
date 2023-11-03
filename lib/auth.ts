@@ -51,10 +51,16 @@ export function getBCVerify({ signed_payload_jwt }: QueryParams) {
     return bigcommerceSigned.verifyJWT(signed_payload_jwt);
 }
 
+// export function setSession(session: SessionProps) {
+//     db.setUser(session);
+//     db.setStore(session);
+//     db.setStoreUser(session);
+// }
+
 export function setSession(session: SessionProps) {
-    db.setUser(session);
-    db.setStore(session);
-    db.setStoreUser(session);
+    localStorage.setItem('user', JSON.stringify(session.user));
+    localStorage.setItem('store', JSON.stringify(session.store_hash));
+    //localStorage.setItem('storeUser', JSON.stringify(session.storeUser));
 }
 
 export async function getSimpleSession(context: string) {
