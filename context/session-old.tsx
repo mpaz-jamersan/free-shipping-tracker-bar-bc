@@ -7,22 +7,25 @@ const SessionContext = createContext({ context: '' });
 
 const SessionProvider = ({ children }) => {
     const { query } = useRouter();
-    const [context, setContext] = useState('');
+    const [sub, setContext] = useState('');
 
     useEffect(() => {
         const signedPayloadJwt = query.signed_payload_jwt;
         const decodedToken = jwt.decode(signedPayloadJwt, { complete: true });
+        if (!decodedToken) {
+            return;
+        }
+
         const payload = decodedToken.payload;
-        const context = payload.context;
-        if (context) {
-            setContext(context.toString());
+        if (payload.sub) {
+            setContext(payload.sub.toString());
             // Keeps app in sync with BC (e.g. heatbeat, user logout, etc)
-            bigCommerceSDK(context);
+            bigCommerceSDK(payload.sub);
         }
     }, [query.signed_payload_jwt]);
 
     return (
-        <SessionContext.Provider value={{ context }}>
+        <SessionContext.Provider value={{ sub }}>
             {children}
         </SessionContext.Provider>
     );

@@ -20,7 +20,6 @@ async function fetcher(url: string, query: string) {
 // https://swr.vercel.app/
 export function useProducts() {
     const { context } = useSession();
-    console.log('sub', context)
     const params = new URLSearchParams({ context }).toString();
     // Request is deduped and cached; Can be shared across components
     const { data, error } = useSWR(context ? ['/api/products', params] : null, fetcher);
